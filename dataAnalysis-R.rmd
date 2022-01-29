@@ -1,0 +1,59 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(dplyr)
+```
+
+
+
+```{r}
+# input data
+games_raw <- read.csv(file = "gamedata.csv")
+
+
+# Get columns and remove unnecessary columns
+colnames(games_raw)
+gameData <- games_raw[, c(-2, -5)]
+```
+
+```{r}
+# Data cleaning
+
+# Remove duplicate variables
+gameData$Publisher <- gsub("\\t.*","",gameData$Publisher)
+
+# Get count of games published and limit it to publishers that published more than 10 games
+publisherCount <- as.data.frame(table(gameData$Publisher)) %>% filter(Freq > 10 & Var1 != "")
+colnames(publisherCount) <- c("Publisher", "PublisherCount")
+
+gameDataFilt <- merge(x=gameData, y=publisherCount, by="Publisher")
+```
+
+```{r}
+Breed = c(
+  "Sheetland Sheepdog Mix",
+  "Pit Bull Mix",
+  "Lhasa Aposo/Miniature",
+  "Cairn Terrier/Chihuahua Mix",
+  "American Pitbull",
+  "Cairn Terrier",
+  "Pit Bull Mix"
+)
+df=data.frame(Breed)
+
+dfcat = data.frame(model.matrix(~ df$Breed-1, data=df))
+names(dfcat) = levels(df$Breed)
+```
+
+
+
+```{r}
+as.data.frame(table(gameData$Publisher))
+```
+
+
+
